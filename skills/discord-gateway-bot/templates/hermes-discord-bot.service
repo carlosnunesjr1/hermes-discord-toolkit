@@ -1,0 +1,44 @@
+[Unit]
+Description=Hermes Discord Bot - Gateway WebSocket Integration
+Documentation=https://github.com/hermes-agent/hermes-agent
+After=network.target hermes-gateway.service
+Wants=hermes-gateway.service
+
+[Service]
+Type=simple
+User=carlos
+Group=carlos
+WorkingDirectory=/home/carlos/hermes-discord-bot
+Environment=PATH=/home/carlos/hermes-discord-bot/venv/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=/home/carlos/hermes-discord-bot/.env
+ExecStart=/home/carlos/hermes-discord-bot/venv/bin/python bot.py
+Restart=always
+RestartSec=10
+RestartForceExitStatus=1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hermes-discord-bot
+
+# Security Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/carlos/hermes-discord-bot
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

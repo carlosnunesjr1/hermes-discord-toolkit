@@ -1,0 +1,125 @@
+# ~/.hermes/config.yaml - Configuração Base Hermes
+
+model:
+  base_url: https://inference-api.nousresearch.com/v1
+  default: nvidia/nemotron-3-ultra:free
+  provider: nous
+
+providers:
+  nous:
+    base_url: https://inference-api.nousresearch.com/v1
+    api_key: ${NOUS_API_KEY}
+    default_model: step-3.7-flash
+  openrouter:
+    base_url: https://openrouter.ai/api/v1
+
+fallback_providers:
+  - nous
+  - openrouter
+
+toolsets:
+  - hermes-cli
+
+agent:
+  max_turns: 500
+  gateway_timeout: 1800
+  restart_drain_timeout: 180
+
+discord:
+  require_mention: true
+  free_response_channels: ""
+  allowed_channels: ""
+  auto_thread: true
+  thread_require_mention: false
+  history_backfill: true
+  history_backfill_limit: 50
+  reactions: true
+  channel_prompts: {}
+  dm_role_auth_guild: ""
+  server_actions: ""
+  allow_any_attachment: false
+  max_attachment_bytes: 33554432
+  voice_fx:
+    enabled: true
+    ambient_enabled: true
+    ambient_path: ""
+    ambient_gain: 0.18
+    duck_gain: 0.06
+    speech_gain: 1.0
+    ack_enabled: true
+    ack_phrases:
+      - "Let me look into that."
+      - "One moment."
+      - "Checking on that now."
+      - "Give me a sec."
+      - "On it."
+
+tts:
+  provider: edge
+  enabled: true
+  edge:
+    voice: pt-BR-AntonioNeural
+  elevenlabs:
+    voice_id: pNInz6obpgDQGcFmaJgB
+    model_id: eleven_multilingual_v2
+  openai:
+    model: gpt-4o-mini-tts
+    voice: alloy
+  use_gateway: true
+
+stt:
+  enabled: true
+  provider: local
+  local:
+    model: base
+    language: ""
+  use_gateway: true
+
+voice:
+  record_key: ctrl+b
+  max_recording_seconds: 120
+  auto_tts: false
+  beep_enabled: true
+  silence_threshold: 200
+  silence_duration: 3
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  write_approval: false
+  memory_char_limit: 2200
+  user_char_limit: 1375
+
+delegation:
+  max_concurrent_children: 3
+  max_spawn_depth: 1
+  orchestrator_enabled: true
+  inherit_mcp_toolsets: true
+
+cron:
+  wrap_response: true
+  max_parallel_jobs: 4
+
+kanban:
+  dispatch_in_gateway: true
+  dispatch_interval_seconds: 60
+  auto_decompose: true
+  auto_decompose_per_tick: 3
+
+webhook:
+  enabled: true
+  port: 8644
+  secret: ""
+
+platforms:
+  api_server:
+    enabled: true
+    extra:
+      host: "127.0.0.1"
+      port: 8642
+
+gateway:
+  max_concurrent_sessions: 10
+  streaming:
+    enabled: true
+    timeout: 30

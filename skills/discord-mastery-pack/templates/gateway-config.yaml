@@ -1,0 +1,64 @@
+# ~/.hermes/gateway-config.yaml - Configuração Avançada Gateway Discord
+# Este arquivo controla comportamentos específicos do gateway Discord
+
+platforms:
+  discord:
+    enabled: true
+    extra:
+      # === ACESSO ADMIN (VOCÊ) ===
+      # Seu User ID Discord - tem acesso a TODOS os comandos
+      allow_admin_from: "SEU_DISCORD_USER_ID_AQUI"
+      
+      # === COMANDOS PARA USUÁRIOS REGULARES ===
+      # Apenas estes comandos + /help /whoami (sempre permitidos)
+      user_allowed_commands:
+        - "help"
+        - "whoami"
+        - "new"
+        - "history"
+        - "model"
+        - "compress"
+        - "status"
+        - "skills"
+        - "cron"
+        - "voice"
+        - "undo"
+        - "save"
+        - "retry"
+      
+      # === COMPORTAMENTO ===
+      require_mention: true                    # Só responde com @menção
+      group_sessions_per_user: true            # Isola sessão por usuário
+      ignore_no_mention: true                  # Silencia se menciona outros mas não o bot
+      
+      # === CANAIS PERMITIDOS ===
+      # Deixe vazio para permitir todos, ou liste IDs separados por vírgula
+      # allowed_channels: "1516397585701666962,OUTRO_CANAL_ID"
+      
+      # === VOICE CHANNEL ===
+      # CRITICAL: Deve ser true para /voice join/leave funcionar
+      voice_enabled: true
+      
+      # === MULTI-AGENTE (para Semana 3+) ===
+      # allow_bots: "mentions"                 # Processa msg de bots só se mencionado
+      channel_history_size: 50                 # Injeta histórico do canal como contexto (para multi-agent)
+      
+      # === WEBHOOK DELIVERY ===
+      # Para webhook deliver "discord" funcionar
+      # deliver_chat_id será passado via deliver_extra no webhook
+
+  # Webhook Platform
+  webhook:
+    enabled: true
+    extra:
+      host: "0.0.0.0"
+      port: 8644
+      # secret virá de WEBHOOK_SECRET no .env
+      
+  # API Server
+  api_server:
+    enabled: true
+    extra:
+      host: "127.0.0.1"
+      port: 8642
+      # API_SERVER_KEY no .env

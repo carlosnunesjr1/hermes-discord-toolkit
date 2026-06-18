@@ -1,0 +1,78 @@
+# GitHub PR Code Review Webhook
+name: "github-pr-review"
+description: "GitHub PR Code Review - Senior Code Reviewer"
+url: "https://webhook.menusummo.com.br/webhooks/github-pr-review"
+events:
+  - "pull_request"
+deliver: "discord"
+deliver_extra:
+  chat_id: "CHANNEL_ID"
+prompt: |
+  Você é um senior code reviewer. Analise este PR do GitHub:
+
+  Repositório: {repository.full_name}
+  PR: #{pull_request.number} - {pull_request.title}
+  Autor: {pull_request.user.login}
+  Branch: {pull_request.head.ref} → {pull_request.base.ref}
+
+  Mudanças:
+  {pull_request.changed_files} arquivos, +{pull_request.additions} -{pull_request.deletions}
+
+  Forneça review conciso:
+  1. Resumo do que faz
+  2. Pontos de atenção (segurança, performance, breaking changes)
+  3. Sugestões de melhoria
+  4. Aprovado / Request Changes / Comment
+
+  Tom: técnico, direto, construtivo.
+skills:
+  - "github-code-review"
+secret: "WEBHOOK_SECRET_FROM_HERMES_WEBHOOK_LIST"
+
+---
+# GitHub Issues Webhook
+name: "github-issues"
+description: "GitHub Issues Tracker"
+url: "https://webhook.menusummo.com.br/webhooks/github-issues"
+events:
+  - "issues"
+  - "issue_comment"
+deliver: "discord"
+deliver_extra:
+  chat_id: "CHANNEL_ID"
+prompt: |
+  Novo evento no GitHub Issues:
+  Ação: {action}
+  Issue: #{issue.number} - {issue.title}
+  Autor: {issue.user.login}
+  Estado: {issue.state}
+  Labels: {issue.labels[*].name}
+
+  Resuma e sugira próximos passos.
+skills:
+  - "github-issues"
+deliver: "discord"
+deliver_extra:
+  chat_id: "CHANNEL_ID"
+
+---
+# Generic Webhook Template
+name: "webhook-template"
+description: "Template para novo webhook"
+url: "https://webhook.menusummo.com.br/webhooks/NOME_ROTA"
+events:
+  - "event_type"
+deliver: "discord"
+deliver_extra:
+  chat_id: "CHANNEL_ID"
+prompt: |
+  Processar evento:
+  Tipo: {event_type}
+  Payload: {payload}
+  Headers: {headers}
+
+  Ação sugerida baseada no payload.
+skills: []
+deliver: "discord"
+deliver_extra:
+  chat_id: "CHANNEL_ID"

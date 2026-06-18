@@ -1,0 +1,58 @@
+# /etc/systemd/system/hermes-gateway.service (system-wide)
+# OU ~/.config/systemd/user/hermes-gateway.service (user service - RECOMENDADO)
+
+# ============================================
+# USER SERVICE (Recomendado - não precisa sudo)
+# ============================================
+# Instala com: hermes gateway install
+# Arquivo gerado em: ~/.config/systemd/user/hermes-gateway.service
+
+[Unit]
+Description=Hermes Agent Gateway - Messaging Platform Integration
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/usr/local/lib/hermes-agent/venv/bin/python -m hermes_cli.main gateway run
+WorkingDirectory=/home/%u/.hermes
+Environment="PATH=/usr/local/lib/hermes-agent/venv/bin:/usr/local/lib/hermes-agent/node_modules/.bin:/usr/bin:/home/%u/.local/bin:/home/%u/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="VIRTUAL_ENV=/usr/local/lib/hermes-agent/venv"
+Environment="HERMES_HOME=/home/%u/.hermes"
+Restart=always
+RestartSec=5
+RestartForceExitStatus=75
+KillMode=mixed
+KillSignal=SIGTERM
+ExecReload=/bin/kill -USR1 $MAINPID
+TimeoutStopSec=210
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
+
+# ============================================
+# DROP-IN PARA ENV VARS (Recomendado)
+# ============================================
+# Crie: ~/.config/systemd/user/hermes-gateway.service.d/env.conf
+#
+# [Service]
+# Environment="DISCORD_BOT_TOKEN=SEU_TOKEN"
+# Environment="API_SERVER_KEY=hermes-api-key-dev-2026"
+# Environment="API_SERVER_PORT=8642"
+# Environment="NOUS_API_KEY=SUA_CHAVE"
+# Environment="WEBHOOK_SECRET=SEU_SECRET"
+# Environment="WEBHOOK_PORT=8644"
+
+# ============================================
+# COMANDOS ÚTEIS
+# ============================================
+# systemctl --user daemon-reload          # Recarregar configs
+# systemctl --user enable --now hermes-gateway  # Ativar + iniciar
+# systemctl --user status hermes-gateway          # Status
+# systemctl --user restart hermes-gateway         # Restart
+# systemctl --user stop hermes-gateway            # Parar
+# journalctl --user -u hermes-gateway -f          # Logs (follow)
+# journalctl --user -u hermes-gateway -n 100      # Últimas 100 linhas

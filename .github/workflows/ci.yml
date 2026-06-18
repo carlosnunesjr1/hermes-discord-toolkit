@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck gettext-base systemd
+
+      - name: Run validation
+        run: ./scripts/validate.sh
+
+      - name: Check for secrets
+        run: |
+          if grep -r "DISCORD_BOT_TOKEN\|API_SERVER_KEY\|WEBHOOK_SECRET" --include="*.template" --include="*.example" templates/ | grep -v "{{"; then
+            echo "❌ Potential secrets in templates"
+            exit 1
+          fi
+          echo "✅ No hardcoded secrets in templates"
+
+  test-render:
+    name: Test Render
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create test config
+        run: |
+          mkdir -p ~/.config/hermes-discord-toolkit
+          cat > ~/.config/hermes-discord-toolkit/.env.local <<'EOF'
+          DISCORD_BOT_TOKEN=test-token
+          DISCORD_ALLOWED_USERS=123456789
+          DISCORD_HOME_CHANNEL=987654321
+          DOMAIN=test.example.com
+          GW_PORT=8642
+          WS_PORT=3002
+          DASH_PORT=9119
+          CAREER_PORT=2019
+          PIM_PORT=9121
+          TERMINAL_PORT=7681
+          CENTRAL_PORT=9130
+          CONTROL_PORT=9120
+          NEXUS_PORT=9121
+          API_SERVER_KEY=test-key-32-chars-long-here!!
+          WEBHOOK_SECRET=test-secret-32-chars-long!!
+          STT_ENABLED=true
+          STT_PROVIDER=local
+          TTS_PROVIDER=edge
+          GATEWAY_ALLOW_ALL_USERS=false
+          HEADROOM_ENABLED=false
+          HEADROOM_URL=http://127.0.0.1:8799
+          EOF
+
+      - name: Render templates
+        run: ./scripts/render-templates.sh
+
+      - name: Verify rendered output
+        run: |
+          # Check no placeholders remain
+          if grep -r "{{" rendered/; then
+            echo "❌ Unresolved placeholders in rendered output"
+            exit 1
+          fi
+          # Check key values present
+          grep -q "test.example.com" rendered/caddy/Caddyfile
+          grep -q "8642" rendered/systemd/hermes-gateway@.service
+          grep -q "test-key" rendered/env/.env
+          echo "✅ Rendered templates valid"
+
+  lint-docs:
+    name: Lint Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check markdown
+        run: |
+          if command -v markdownlint >/dev/null 2>&1; then
+            markdownlint README.md docs/
+          else
+            echo "markdownlint not installed, skipping"
+          fi

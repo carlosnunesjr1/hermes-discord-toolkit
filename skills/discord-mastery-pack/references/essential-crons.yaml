@@ -1,0 +1,83 @@
+# Morning Voice Check-in - 07:00 Daily
+name: "Morning Voice Check-in"
+schedule: "0 7 * * *"
+timezone: "America/Sao_Paulo"
+deliver: "discord:CHANNEL_ID"
+prompt: |
+  Você é o assistente matinal do Carlos. Faça check-in por VOICE CHANNEL:
+
+  1. Use /voice join para entrar no voice channel dele
+  2. Cumprimente calorosamente: "Bom dia, Carlos! São 7 da manhã."
+  3. Pergunte: "Como foi seu sono? Descansou bem?"
+  4. Pergunte: "Quais são as 3 prioridades de hoje?"
+  5. Escute as respostas (STT automático via faster-whisper)
+  6. Resuma naturalmente: "Entendi: sono [resposta], prioridades: [1], [2], [3]"
+  7. Deseje bom dia produtivo
+  8. Use /voice leave para sair do VC
+  9. Salve resumo na memory com tag 'morning-checkin'
+
+  Seja caloroso, natural, conversacional. Use TTS (Edge pt-BR-AntonioNeural) para falar.
+
+---
+# Weekly Executive Report - Sunday 20:00
+name: "Weekly Executive Report"
+schedule: "0 20 * * 0"
+timezone: "America/Sao_Paulo"
+deliver: "discord:CHANNEL_ID"
+prompt: |
+  Gere um relatório semanal executivo para o Carlos.
+
+  ## 📊 Relatório Semanal - $(date +'%d/%m/%Y')
+
+  ### ✅ Conquistas da Semana
+  - Liste 3-5 itens principais concluídos
+
+  ### 📈 Métricas
+  - Sessões ativas: [extrair de hermes sessions list]
+  - Tokens usados: [estimativa]
+  - Cron jobs executados: [count]
+
+  ### 🎯 Próxima Semana
+  - Top 3 prioridades
+
+  ### ⚠️ Alertas/Riscos
+  - Qualquer item que precise de atenção
+
+  Seja conciso, direto, tom executivo. Entregue no Discord.
+
+---
+# VPS Health Monitor - Every 15 minutes
+name: "VPS Health Monitor"
+schedule: "*/15 * * * *"
+timezone: "America/Sao_Paulo"
+deliver: "discord:CHANNEL_ID"
+prompt: |
+  Verifique saúde do sistema VPS (Linux Ubuntu):
+  - CPU usage (%)
+  - Memória RAM usage (%)
+  - Disco usage (%)
+  - Uptime
+  - Load average
+
+  REGRAS CRÍTICAS:
+  - Se CPU > 80% OU Memória > 85% OU Disco > 90%: ALERTE no Discord com detalhes e sugestões
+  - Se tudo OK: NÃO faça nada (silêncio total - sem mensagem)
+  - Use comandos: top, free -h, df -h, uptime
+
+---
+# Token Compression Routine - Every 6 hours
+name: "Token Compression Routine"
+schedule: "0 */6 * * *"
+timezone: "America/Sao_Paulo"
+deliver: "discord:CHANNEL_ID"
+prompt: |
+  Execute compressão de contexto automática para controle de tokens:
+
+  1. Identifique sessões antigas/ativas com histórico longo
+  2. Execute /compress para comprimir histórico preservando decisões-chave
+  3. Relate:
+     - Sessões comprimidas
+     - Tokens estimados economizados
+     - Contexto preservado vs comprimido
+
+  Seja técnico, conciso. Use ferramenta compress nativa.

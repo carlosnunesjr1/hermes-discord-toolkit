@@ -1,0 +1,36 @@
+# Personal config — NEVER commit
+*.local
+.env.local
+.env.*.local
+rendered/
+secrets/
+.config/hermes-discord-toolkit/
+
+# Runtime
+logs/
+*.log
+*.pid
+*.sock
+data/
+sessions/
+state.db
+
+# OS/Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python/Node
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+*.egg-info/
+
+# Hermes specific
+.hermes/auth.json
+.hermes/sessions/
+.hermes/logs/

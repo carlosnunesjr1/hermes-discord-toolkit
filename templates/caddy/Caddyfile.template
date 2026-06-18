@@ -1,0 +1,109 @@
+# {{DOMAIN}} — Caddy Reverse Proxy
+# Rendered from templates/caddy/Caddyfile.template
+# Installs to: /etc/caddy/Caddyfile
+# Cloudflare handles SSL (Full/Strict), Caddy runs HTTP only
+
+{
+    admin off
+    http_port 80
+    https_port 443
+}
+
+# Gateway API
+{{SUBDOMAIN_GATEWAY}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{GW_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+    header {
+        X-Forwarded-Proto "https"
+        X-Real-IP {remote_host}
+        X-Forwarded-For {remote_host}
+    }
+}
+
+# Workspace Dashboard
+{{SUBDOMAIN_WORKSPACE}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{WS_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+    header {
+        X-Forwarded-Proto "https"
+        X-Real-IP {remote_host}
+        X-Forwarded-For {remote_host}
+    }
+}
+
+# Career Hub
+{{SUBDOMAIN_CAREER}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{CAREER_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+}
+
+# PIM
+{{SUBDOMAIN_PIM}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{PIM_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+}
+
+# Terminal (ttyd)
+{{SUBDOMAIN_TERMINAL}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{TERMINAL_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+    # WebSocket support for ttyd
+    @websocket {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    handle @websocket {
+        reverse_proxy 127.0.0.1:{{TERMINAL_PORT}} {
+            transport http {
+                read_buffer 4096
+            }
+        }
+    }
+}
+
+# Central de Comando
+{{SUBDOMAIN_CENTRAL}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{CENTRAL_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+}
+
+# Control Daemon
+{{SUBDOMAIN_CONTROL}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{CONTROL_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+}
+
+# Nexus PIM
+{{SUBDOMAIN_NEXUS}}.{{DOMAIN}} {
+    reverse_proxy 127.0.0.1:{{NEXUS_PORT}} {
+        transport http {
+            read_buffer 4096
+        }
+    }
+}
+
+# Health check endpoint (no subdomain)
+{{DOMAIN}} {
+    respond "Hermes Discord Toolkit — {{DOMAIN}}" 200
+}

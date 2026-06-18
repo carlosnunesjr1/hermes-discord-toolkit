@@ -1,0 +1,33 @@
+# {{DOMAIN}} — Hermes Workspace
+# Rendered from templates/systemd/hermes-workspace@.service
+# Installs to: /etc/systemd/system/hermes-workspace@.service
+
+[Unit]
+Description=Hermes Workspace (%i)
+After=network-online.target hermes-gateway@%i.service
+Wants=network-online.target hermes-gateway@%i.service
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=/home/%i/hermes-workspace
+Environment=HOME=/home/%i
+EnvironmentFile=-/opt/hermes/.env
+Environment=PORT={{WS_PORT}}
+Environment=HERMES_API_URL=http://127.0.0.1:{{GW_PORT}}
+Environment=HERMES_DASHBOARD_URL=http://127.0.0.1:{{DASH_PORT}}
+Environment=HERMES_API_TOKEN={{API_SERVER_KEY}}
+Environment=HERMES_DASHBOARD_TOKEN={{DASHBOARD_TOKEN:-{{API_SERVER_KEY}}}}
+Environment=HERMES_WORKSPACE_AUTO_START_AGENT=false
+Environment=CLAUDE_API_URL=http://127.0.0.1:{{GW_PORT}}
+ExecStartPre=/bin/bash -c 'cd /home/%i/hermes-workspace && rm -rf node_modules/.vite .tanstack dist src/routeTree.gen.ts 2>/dev/null; true'
+ExecStart=/bin/bash -c 'cd /home/%i/hermes-workspace && PORT={{WS_PORT}} pnpm dev'
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/home/%i/.hermes/logs/workspace.log
+StandardError=append:/home/%i/.hermes/logs/workspace.error.log
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

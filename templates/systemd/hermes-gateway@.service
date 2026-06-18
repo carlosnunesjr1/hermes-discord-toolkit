@@ -1,0 +1,32 @@
+# {{DOMAIN}} — Hermes Gateway
+# Rendered from templates/systemd/hermes-gateway@.service
+# Installs to: /etc/systemd/system/hermes-gateway@.service
+
+[Unit]
+Description=Hermes Gateway (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=/home/%i
+Environment=HOME=/home/%i
+EnvironmentFile=-/opt/hermes/.env
+ExecStartPre=/bin/bash -c 'mkdir -p /home/%i/.hermes/logs'
+ExecStart=/usr/local/bin/hermes gateway run
+Restart=on-failure
+RestartSec=5
+RestartPreventExitStatus=SIGTERM
+StandardOutput=append:/home/%i/.hermes/logs/gateway.log
+StandardError=append:/home/%i/.hermes/logs/gateway.error.log
+LimitNOFILE=65536
+LimitNPROC=4096
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/%i/.hermes /opt/hermes
+
+[Install]
+WantedBy=multi-user.target
