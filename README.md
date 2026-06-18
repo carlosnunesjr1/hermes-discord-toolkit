@@ -29,16 +29,31 @@ cd hermes-discord-toolkit
 
 ```
 hermes-discord-toolkit/
-├── skills/                 # Hermes skills (zero personal config)
-├── templates/              # Templates with {{PLACEHOLDERS}}
-│   ├── env/               # .env.example
-│   ├── systemd/           # systemd unit files
-│   ├── caddy/             # Caddyfile.template
-│   └── docker/            # docker-compose.yml.template
-├── scripts/               # Read ~/.config/hermes-discord-toolkit/.env.local
-├── examples/              # Functional examples (no secrets)
-├── docs/                  # Documentation
-└── .github/workflows/     # CI validation
+├── ci/ci.yml                    # GitHub Actions CI (copy to .github/workflows/ to enable)
+├── .github/                     # (empty - GitHub OAuth lacks workflow scope)
+├── .gitignore                   # Protects .local, secrets, rendered/
+├── LICENSE                      # MIT
+├── README.md                    # English main README
+├── docs/
+│   ├── configuration.md         # All variables reference
+│   └── deployment.md            # VPS deploy guide
+├── examples/
+│   ├── basic-bot/               # Minimal slash-commands bot
+│   └── voice-tts/               # Voice STT/TTS bot
+├── scripts/
+│   ├── setup.sh                 # Interactive config
+│   ├── render-templates.sh      # Template rendering
+│   ├── deploy.sh                # VPS deployment
+│   └── validate.sh              # CI/local validation
+├── templates/
+│   ├── env/.env.example         # All vars with {{PLACEHOLDERS}}
+│   ├── systemd/                 # systemd unit templates
+│   └── caddy/Caddyfile.template # 9 subdomains + WebSocket
+└── skills/                      # 4 Discord skills
+    ├── discord-gateway-bot/
+    ├── discord-forum-idea-incubator/
+    ├── discord-forum-ideation-pipeline/
+    └── discord-mastery-pack/
 ```
 
 ## Configuration
